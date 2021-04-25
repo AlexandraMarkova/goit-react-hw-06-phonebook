@@ -21,6 +21,13 @@ class ContactForm extends Component {
   handleSubmit = event => {
     event.preventDefault();
 
+    const unavailableName = this.props.contacts.find(
+      contact => contact.name === this.state.name,
+    );
+    if (unavailableName) {
+      alert(`${this.state.name} is already in contacts`);
+      return;
+    }
     this.props.onSubmit(this.state);
     this.reset();
   };
@@ -66,19 +73,12 @@ class ContactForm extends Component {
   }
 }
 
-// const formSubmitHandler = (allContacts, state) => {
-//   const isExistContacts = !!allContacts.find(
-//     contact => contact.name === state.name,
-//   );
-//   !isExistContacts && alert(`${state.name} is already in contacts`);
-// };
-
-// const mapStateToProps = state => ({
-//   contacts: formSubmitHandler(state.contacts.items, state),
-// });
+const mapStateToProps = state => ({
+  contacts: state.contacts.items,
+});
 
 const mapDispatchToProps = dispatch => ({
   onSubmit: data => dispatch(addContacts(data)),
 });
 
-export default connect(null, mapDispatchToProps)(ContactForm);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactForm);
